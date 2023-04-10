@@ -127,7 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigHandler.cpp" />
     <ClCompile Include="ThePostMachine.cpp" />
+    <ClCompile Include="UIHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConfigHandler.h" />
+    <ClInclude Include="UIHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
