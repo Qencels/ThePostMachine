@@ -32,5 +32,8 @@
     <ClInclude Include="UIHandler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

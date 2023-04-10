@@ -2,13 +2,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "Enums.h"
 
 namespace postMachine {
 	namespace configHandler {
-
-		enum ErrorCodes {
-			WRONG_PATH_OR_NO_PERMISSION
-		};
 
 		class Config {
 
