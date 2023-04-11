@@ -29,8 +29,8 @@ namespace postMachine {
 
 				static Config* getInstance();
 
-				std::vector<std::string>& getData();
-				std::string getVer();
+				static std::vector<std::string>& getData();
+				static std::string getVer();
 
 		};
 

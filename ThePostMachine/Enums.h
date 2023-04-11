@@ -12,12 +12,15 @@ namespace postMachine {
 		show_alg,
 		clear,
 		start,
-		exitC
+		exitC,
+		importF,
+		exportF,
 	};
 
 	enum ErrorCodes {
 		WRONG_PATH_OR_NO_PERMISSION,
-		WRONG_COMMAND
+		WRONG_COMMAND,
+		WRONG_ARG
 	};
 
 }

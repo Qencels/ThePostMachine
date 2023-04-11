@@ -128,12 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConfigHandler.cpp" />
+    <ClCompile Include="MarksHandler.cpp" />
     <ClCompile Include="ThePostMachine.cpp" />
     <ClCompile Include="UIHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigHandler.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="MarksHandler.h" />
     <ClInclude Include="UIHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

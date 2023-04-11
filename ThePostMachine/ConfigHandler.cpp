@@ -5,7 +5,7 @@ namespace postMachine {
 
         //default data
         const std::string Config::CONFIG_PATH = "config.txt";
-        const std::string Config::CURRENT_VER = "0002-A";
+        const std::string Config::CURRENT_VER = "0003-A";
 
         std::vector<std::string> Config::data = {"Right shift: >", "Left shift: <", "Set mark: V", 
             "Delete mark: X", "Fork: ?", "End of program: !"};
@@ -81,7 +81,7 @@ namespace postMachine {
         Config::Config(const Config& obj) {}
 
         //getInstance
-        Config* Config::p_instance;
+        Config* Config::p_instance = nullptr;
 
         Config* Config::getInstance()
         {

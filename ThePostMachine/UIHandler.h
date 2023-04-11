@@ -7,13 +7,18 @@
 namespace postMachine {
 	namespace UIHandler {
 
-		void showConfig(std::vector<std::string> data, std::string ver);
 		void welcomeMSG();
 		void errorMSG(ErrorCodes err);
-		void aboutMSG(std::string ver, std::vector<std::string>& definitions);
+		void aboutMSG(std::string ver);
+		void carriageMSG(long long int pos);
+		void marksMSG();
+
+		void showMarks(std::vector<long long int> positions);
 
 		void input(std::string& buffer);
 		int commandSelector(std::string& command);
+
+		std::vector<std::string> splitStr(std::string str);
 
 	}
 }
