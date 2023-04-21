@@ -10,10 +10,12 @@ namespace postMachine {
 		void welcomeMSG();
 		void errorMSG(ErrorCodes err);
 		void aboutMSG(std::string ver);
-		void carriageMSG(long long int pos);
+		void carriageMSG(std::string pos);
 		void marksMSG();
+		void algMSG(std::vector<std::string> commandsDif);
 
 		void showMarks(std::vector<long long int> positions);
+		void showAlg(std::vector<std::string> commands);
 
 		void input(std::string& buffer);
 		int commandSelector(std::string& command);

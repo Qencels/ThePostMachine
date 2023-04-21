@@ -65,7 +65,7 @@ namespace postMachine {
 				<< "Press Enter to return to the menu.\n\n";
 		}
 
-		void carriageMSG(long long int pos) {
+		void carriageMSG(std::string pos) {
 			std::cout << "\nThe position of carriage has been updated.\n"
 				<< "Current position: " << pos << "\n"
 				<< "Press enter to continue\n";
@@ -81,6 +81,21 @@ namespace postMachine {
 				<< "delete marks in these positions.\n\n"
 				<< "Use /menu to return to the menu.\n"
 				<< "======================================\n\n";
+		}
+
+		void algMSG(std::vector<std::string> commandsDif) {
+			system("cls");
+			std::cout << "====================================================\n"
+				<< "You have moved on to setting up algorithm commands.\n"
+				<< "Available commands:\n\n";
+			for (size_t i = 0; i < commandsDif.size(); i++) {
+				std::cout << i + 1 << ". " << commandsDif[i] << "\n";
+			}
+			std::cout << "\nUse commands definitions for setting up.\n"
+				<< "Use /del (index) to delete command in this position.\n"
+				<< "Use /menu to return to the menu.\n"
+				<< "====================================================\n\n";
+				
 		}
 
 		void input(std::string& buffer) {
@@ -106,7 +121,6 @@ namespace postMachine {
 		std::vector<std::string> splitStr(std::string str) {
 			std::vector<std::string> res;
 			std::string tempStr = "";
-			size_t k = 0;
 
 			for (size_t i = 0; i < str.size(); i++) {
 				if (str[i] != ' ') {
@@ -115,10 +129,10 @@ namespace postMachine {
 				else {
 					res.push_back(tempStr);
 					tempStr = "";
-					k++;
 				}
 			}
-			if (res[res.size() - 1] != tempStr) res.push_back(tempStr);
+			if (res.empty()) res.push_back(tempStr);
+			if (res.back() != tempStr && tempStr != "") res.push_back(tempStr);
 
 			return res;
 		}
@@ -128,6 +142,12 @@ namespace postMachine {
 				std::cout << positions[i] << " ";
 			}
 			std::cout << "\n";
+		}
+
+		void showAlg(std::vector<std::string> commands) {
+			for (size_t i = 0; i < commands.size(); i++) {
+				std::cout << i + 1 << ". " << commands[i] << "\n";
+			}
 		}
 
 	}

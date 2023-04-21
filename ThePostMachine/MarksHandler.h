@@ -18,10 +18,12 @@ namespace postMachine {
 				static long long int car_pos; // carriage position
 
 				//for delMark;
-				static size_t find(long long int elem);
 				static void swap(long long int& firstE, long long int& secondE); 
 
 			public:
+
+				static long long int find(long long int elem);
+				static void clearValues();
 
 				static void setMark(long long int pos);
 				static void delMark(long long int pos);

@@ -127,12 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlgorithmHandler.cpp" />
     <ClCompile Include="ConfigHandler.cpp" />
     <ClCompile Include="MarksHandler.cpp" />
     <ClCompile Include="ThePostMachine.cpp" />
     <ClCompile Include="UIHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlgorithmHandler.h" />
     <ClInclude Include="ConfigHandler.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="MarksHandler.h" />

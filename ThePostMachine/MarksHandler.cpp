@@ -22,7 +22,7 @@ namespace postMachine {
 
 		EndlessBelt::EndlessBelt(const EndlessBelt& obj) {}
 
-		size_t EndlessBelt::find(long long int elem) {
+		long long int EndlessBelt::find(long long int elem) {
 			for (size_t i = 0; i < positions.size(); i++) {
 				if (positions[i] == elem) return i;
 			}
@@ -57,6 +57,11 @@ namespace postMachine {
 
 		long long int EndlessBelt::getCarPos() {
 			return car_pos;
+		}
+
+		void EndlessBelt::clearValues(){
+			positions.clear();
+			car_pos = 0;
 		}
 
 	}
