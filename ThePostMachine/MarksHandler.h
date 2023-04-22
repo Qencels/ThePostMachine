@@ -1,6 +1,7 @@
 #pragma once
 #include "Enums.h"
 #include <vector>
+#include <algorithm>
 
 namespace postMachine {
 	namespace marksHandler {
@@ -34,6 +35,8 @@ namespace postMachine {
 				static long long int getCarPos();
 
 				static EndlessBelt* getInstance();
+
+				static void sortArr();
 
 		};
 

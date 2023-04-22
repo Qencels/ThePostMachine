@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="AlgorithmHandler.cpp" />
     <ClCompile Include="ConfigHandler.cpp" />
+    <ClCompile Include="FileHandler.cpp" />
     <ClCompile Include="MarksHandler.cpp" />
     <ClCompile Include="ThePostMachine.cpp" />
     <ClCompile Include="UIHandler.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="AlgorithmHandler.h" />
     <ClInclude Include="ConfigHandler.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="FileHandler.h" />
     <ClInclude Include="MarksHandler.h" />
     <ClInclude Include="UIHandler.h" />
   </ItemGroup>

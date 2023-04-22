@@ -14,7 +14,7 @@ namespace postMachine {
 				<< "3. /set_alg - setting up the algorithm.\n"
 				<< "4. /set_marks - setting marks.\n"
 				<< "5. /set_carriage (position) - setting carriage.\n\n"
-				<< "6. /show_points - shows the set values.\n"
+				<< "6. /show_marks - shows the set values.\n"
 				<< "7. /show_alg - shows the set commands.\n\n"
 				<< "8. /clear - reset all values.\n"
 				<< "9. /start - run the algorithm.\n"
@@ -97,18 +97,52 @@ namespace postMachine {
 				<< "====================================================\n\n";
 				
 		}
-
-		void input(std::string& buffer) {
-			std::getline(std::cin, buffer);
+		
+		void fileExportMSG(std::string filePath) {
+			std::cout << "The export was successful.\n"
+				<< "File path: " << filePath << "\n"
+				<< "Press enter to continue\n";
 		}
 
-		int commandSelector(std::string& command) {
+		void fileImportMSG() {
+			std::cout << "The import was successful.\n"
+				<< "Press enter to continue\n";
+		}
+
+		std::string formatingInput(std::string str) {
+			
+			std::string res = "";
+			std::string tempStr = "";
+
+			for (size_t i = 0; i < str.size(); i++) {
+				if (str[i] == '\t') str[i] = ' ';
+				if (str[i] != ' ') {
+					tempStr.push_back(str[i]);
+				}
+				else if (tempStr.size() > 0) {
+					res = res + tempStr + " ";
+					tempStr = "";
+				}
+			}
+			res = res + tempStr;
+
+			return res;
+		}
+
+		void input(std::string& buffer) {
+			std::string tempStr;
+			std::getline(std::cin, tempStr);
+			buffer = formatingInput(tempStr);
+		}
+
+		int commandSelector(std::string command) {
+			for (size_t i = 0; i < command.size(); i++) command[i] = tolower(command[i]);
 			if (command == "/about") return about;
 			if (command == "/menu") return menu;
 			if (command == "/set_alg") return set_alg;
 			if (command == "/set_marks") return set_marks;
 			if (command.substr(0,13) == "/set_carriage") return set_carriage;
-			if (command == "/show_points") return show_points;
+			if (command == "/show_marks") return show_marks;
 			if (command == "/show_alg") return show_alg;
 			if (command == "/clear") return clear;
 			if (command == "/start") return start;

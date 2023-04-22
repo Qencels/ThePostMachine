@@ -7,13 +7,22 @@
 #include "UIHandler.h"
 #include "MarksHandler.h"
 #include "AlgorithmHandler.h"
+#include "FileHandler.h"
 
-void executeCommand(int command, std::string args);
+void executeCommand(int command, std::string args, std::string ver, std::vector<std::string>& data);
+
+std::string CURRENT_VERSION;
+std::vector<std::string> CONFIG_DATA;
 
 using namespace postMachine;
 
 int main()
 {
+
+	try {
+		CURRENT_VERSION = configHandler::Config::getInstance()->getVer();
+		CONFIG_DATA = configHandler::Config::getInstance()->getData();
+	} catch (ErrorCodes err) { UIHandler::errorMSG(err); }
 
     while (true) {
 
@@ -22,7 +31,7 @@ int main()
         std::string buffer = "";
         UIHandler::input(buffer);
 
-		try { executeCommand(UIHandler::commandSelector(buffer), buffer); }
+		try { executeCommand(UIHandler::commandSelector(buffer), buffer, CURRENT_VERSION, CONFIG_DATA); }
         catch (ErrorCodes err) { UIHandler::errorMSG(err); }
 
     }
@@ -94,24 +103,26 @@ std::string carriageSettingsInit(std::string args) {
 	return res;
 }
 
-void algSettingsInit() {
+void algSettingsInit(std::vector<std::string>& cfgData) {
 	std::string buffer = "";
+	std::string lowerBuffer = "";
 
 	std::vector<std::string> cmdDeffinitions;
 
-	try { cmdDeffinitions = configHandler::Config::getInstance()->getData(); }
-	catch (...) { throw WRONG_PATH_OR_NO_PERMISSION; }
+	cmdDeffinitions = cfgData;
 
 	size_t lineIndex = 1;
 
-	while (buffer != "/menu") {
+	while (lowerBuffer != "/menu") {
 		std::cout << lineIndex << ". ";
 		UIHandler::input(buffer);
+		lowerBuffer = buffer;
+		for (size_t i = 0; i < lowerBuffer.size(); i++) lowerBuffer[i] = tolower(lowerBuffer[i]);
 		lineIndex++;
 
-		if (buffer.substr(0, 5) == "/menu") continue;
+		if (lowerBuffer.substr(0, 5) == "/menu") continue;
 
-		if (buffer.substr(0, 4) != "/del") {
+		if (lowerBuffer.substr(0, 4) != "/del") {
 			std::string tempSubstr = buffer.substr(0, buffer.find(" "));
 
 			for (size_t i = 0; i < cmdDeffinitions.size(); i++) {
@@ -134,9 +145,12 @@ void algSettingsInit() {
 
 void marksSettingsInit() {
 	std::string buffer = "";
+	std::string lowerBuffer = "";
 
-	while (buffer != "/menu") {
+	while (lowerBuffer != "/menu") {
 		UIHandler::input(buffer);
+		lowerBuffer = buffer;
+		for (size_t i = 0; i < lowerBuffer.size(); i++) lowerBuffer[i] = tolower(lowerBuffer[i]);
 
 		std::vector<std::string> args;
 
@@ -144,7 +158,7 @@ void marksSettingsInit() {
 
 		if (buffer.size() <= 5) continue;
 
-		if (buffer.substr(0, 4) == "/set") {
+		if (lowerBuffer.substr(0, 4) == "/set") {
 			args = UIHandler::splitStr(buffer.substr(5, EOF));
 
 			for (size_t i = 0; i < args.size(); i++) {
@@ -152,7 +166,7 @@ void marksSettingsInit() {
 				marksHandler::EndlessBelt::setMark(temp);
 			}
 		}
-		else if (buffer.substr(0, 4) == "/del") {
+		else if (lowerBuffer.substr(0, 4) == "/del") {
 			args = UIHandler::splitStr(buffer.substr(5, EOF));
 
 			for (size_t i = 0; i < args.size(); i++) {
@@ -167,12 +181,12 @@ void marksSettingsInit() {
 	}
 }
 
-void executeCommand(int command, std::string args) {
+void executeCommand(int command, std::string args, std::string ver, std::vector<std::string>& data) {
 
 	switch (command)
 	{
 	case about:
-		try { UIHandler::aboutMSG(configHandler::Config::getInstance()->getVer()); }
+		try { UIHandler::aboutMSG(ver); }
 		catch (ErrorCodes err) { UIHandler::errorMSG(err); }
 		getchar();
 		break;
@@ -182,10 +196,9 @@ void executeCommand(int command, std::string args) {
 		break;
 
 	case set_alg:
-		try { UIHandler::algMSG(configHandler::Config::getInstance()->getData()); }
+		try { UIHandler::algMSG(data); }
 		catch (ErrorCodes err) { UIHandler::errorMSG(err); }
-		algSettingsInit();
-		getchar();
+		algSettingsInit(data);
 		break;
 
 	case set_marks:
@@ -198,7 +211,7 @@ void executeCommand(int command, std::string args) {
 		getchar();
 		break;
 
-	case show_points:
+	case show_marks:
 		UIHandler::showMarks(marksHandler::EndlessBelt::getPositions());
 		getchar();
 		break;
@@ -216,7 +229,7 @@ void executeCommand(int command, std::string args) {
 	case start:
 		try {
 			startAlg(algorithmHandler::CommandsList::getCommands(), marksHandler::EndlessBelt::getPositions(),
-				marksHandler::EndlessBelt::getCarPos(), configHandler::Config::getInstance()->getData());
+				marksHandler::EndlessBelt::getCarPos(), data);
 		}
 		catch (ErrorCodes err) { UIHandler::errorMSG(err); }
 		break;
@@ -226,11 +239,23 @@ void executeCommand(int command, std::string args) {
 		break;
 
 	case importF:
-
+		marksHandler::EndlessBelt::clearValues();
+		algorithmHandler::CommandsList::clearValues();
+		try {
+			marksHandler::EndlessBelt::setCarriage(fileHandler::importFile(args.substr(args.find(" ") + 1, EOF), ver, algorithmHandler::CommandsList::getCommands(), marksHandler::EndlessBelt::getPositions()));
+			UIHandler::fileImportMSG();
+		}
+		catch (ErrorCodes err) { UIHandler::errorMSG(err); }
+		getchar();
 		break;
 
 	case exportF:
-
+		try { 
+			fileHandler::saveToFile(args.substr(args.find(" ")+1, EOF), ver, algorithmHandler::CommandsList::getCommands(), marksHandler::EndlessBelt::getPositions(), marksHandler::EndlessBelt::getCarPos());
+			UIHandler::fileExportMSG(args.substr(args.find(" ") + 1, EOF));
+		}
+		catch (ErrorCodes err) { UIHandler::errorMSG(err); }
+		getchar();
 		break;
 
 	default:

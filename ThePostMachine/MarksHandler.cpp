@@ -52,6 +52,7 @@ namespace postMachine {
 		}
 
 		std::vector<long long int>& EndlessBelt::getPositions() {
+			sortArr();
 			return positions;
 		}
 
@@ -62,6 +63,10 @@ namespace postMachine {
 		void EndlessBelt::clearValues(){
 			positions.clear();
 			car_pos = 0;
+		}
+
+		void EndlessBelt::sortArr() {
+			std::sort(positions.begin(), positions.end());
 		}
 
 	}
