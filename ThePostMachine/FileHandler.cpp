@@ -28,7 +28,7 @@ namespace postMachine {
 
 		}
 
-		long long int importFile(std::string filePath, std::string version, std::vector<std::string>& algCommands, std::vector<long long int>& marksPositions) {
+		long long int importFile(std::string filePath, std::string version, std::vector<std::string>& algCommands, std::vector<std::string>& algDef, std::vector<long long int>& marksPositions) {
 
 			long long int res = 0;
 
@@ -36,6 +36,11 @@ namespace postMachine {
 			input.open(filePath);
 
 			if (!input.is_open()) throw WRONG_PATH_OR_NO_PERMISSION;
+
+			std::vector<std::string> cmdDef;
+			for (size_t i = 0; i < algDef.size(); i++) {
+				cmdDef.push_back(algDef[i].substr(algDef[i].find(":") + 2, EOF));
+			}
 
 			std::string tempStr;
 			std::getline(input, tempStr);
@@ -49,7 +54,12 @@ namespace postMachine {
 			while (input.good()) {
 				std::getline(input, tempStr);
 				if (tempStr == "") break;
-				algCommands.push_back(tempStr);
+
+				for (size_t i = 0; i < cmdDef.size(); i++) {
+					if (tempStr.substr(0, cmdDef[i].size()) == cmdDef[i]) {
+						algCommands.push_back(tempStr);
+					}
+				}
 			}
 
 			while (tempStr.substr(0,18) != "Carriage position:" && input.good()) {

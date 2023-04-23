@@ -54,6 +54,8 @@ void startAlg(std::vector<std::string>& commands, std::vector<long long int>& po
 	size_t i = 0;
 	long long int carPos = carriagePos;
 
+	if (i >= commands.size()) return;
+
 	while (algCmdSelector(commands[i], cmdDeffinitions) != 5) { // 5 - end of program operator
 
 		std::vector<std::string> args = UIHandler::splitStr(commands[i].substr(commands[i].find(" ") + 1, EOF));
@@ -62,29 +64,41 @@ void startAlg(std::vector<std::string>& commands, std::vector<long long int>& po
 		{
 		case 0:
 			carPos++;
-			i = _atoi64(args[0].data()) -1;
+			try { i = _atoi64(args[0].data()) - 1; }
+			catch (...) { return; }
 			break;
 		case 1:
 			carPos--;
-			i = _atoi64(args[0].data()) -1;
+			try { i = _atoi64(args[0].data()) - 1; }
+			catch (...) { return; }
 			break;
 		case 2:
 			marksHandler::EndlessBelt::setMark(carPos);
-			i = _atoi64(args[0].data()) -1;
+			try { i = _atoi64(args[0].data()) - 1; }
+			catch (...) { return; }
 			break;
 		case 3:
 			marksHandler::EndlessBelt::delMark(carPos);
-			i = _atoi64(args[0].data()) -1;
+			try { i = _atoi64(args[0].data()) - 1; }
+			catch (...) { return; }
 			break;
 		case 4:
-			if (marksHandler::EndlessBelt::find(carPos) != -1) { i = _atoi64(args[1].data()) -1; }
-			else { i = _atoi64(args[0].data()) -1; }
+			if (marksHandler::EndlessBelt::find(carPos) != -1) { 
+				try { i = _atoi64(args[1].data()) - 1; }
+				catch (...) { return; }
+			}
+			else { 
+				try { i = _atoi64(args[0].data()) - 1; }
+				catch (...) { return; }
+			}
 			break;
 		case 5:
 			break;
 		default:
 			break;
 		}
+
+		if (i >= commands.size()) break;
 	}
 }
 
@@ -122,7 +136,30 @@ void algSettingsInit(std::vector<std::string>& cfgData) {
 
 		if (lowerBuffer.substr(0, 5) == "/menu") continue;
 
-		if (lowerBuffer.substr(0, 4) != "/del") {
+		if (lowerBuffer.substr(0, 4) == "/del") {
+			std::vector<std::string> args;
+			args = UIHandler::splitStr(buffer.substr(5, EOF));
+
+			for (size_t i = 0; i < args.size(); i++) {
+				algorithmHandler::CommandsList::delCommand(_atoi64(args[i].data())-1);
+			}
+		}
+		else if (lowerBuffer.substr(0, 4) == "/set") {
+			std::vector<std::string> args;
+			args = UIHandler::splitStr(buffer.substr(5, EOF));
+
+			std::string tempSubstr = args[1].substr(0, args[1].find(" "));
+			std::string cmd;
+			for (size_t i = 1; i < args.size(); i++) cmd = cmd + args[i] + " ";
+
+			for (size_t i = 0; i < cmdDeffinitions.size(); i++) {
+				if (tempSubstr == cmdDeffinitions[i].substr(cmdDeffinitions[i].find(":") + 2, EOF)) {
+					algorithmHandler::CommandsList::changeCommand(_atoi64(args[0].data()) - 1, cmd);
+				}
+			}
+		}
+		else {
+
 			std::string tempSubstr = buffer.substr(0, buffer.find(" "));
 
 			for (size_t i = 0; i < cmdDeffinitions.size(); i++) {
@@ -130,14 +167,7 @@ void algSettingsInit(std::vector<std::string>& cfgData) {
 					algorithmHandler::CommandsList::addCommand(buffer);
 				}
 			}
-		}
-		else {
-			std::vector<std::string> args;
-			args = UIHandler::splitStr(buffer.substr(5, EOF));
 
-			for (size_t i = 0; i < args.size(); i++) {
-				algorithmHandler::CommandsList::delCommand(_atoi64(args[i].data())-1);
-			}
 		}
 
 	}
@@ -222,8 +252,20 @@ void executeCommand(int command, std::string args, std::string ver, std::vector<
 		break;
 
 	case clear:
-		marksHandler::EndlessBelt::clearValues();
-		algorithmHandler::CommandsList::clearValues();
+		if (args.find("all") != -1) {
+			marksHandler::EndlessBelt::clearValues();
+			algorithmHandler::CommandsList::clearValues();
+		}
+		else if (args.find("alg") != -1) {
+			algorithmHandler::CommandsList::clearValues();
+		}
+		else if (args.find("marks") != -1) {
+			marksHandler::EndlessBelt::clearValues();
+		}
+		else {
+			marksHandler::EndlessBelt::clearValues();
+			algorithmHandler::CommandsList::clearValues();
+		}
 		break;
 
 	case start:
@@ -242,7 +284,7 @@ void executeCommand(int command, std::string args, std::string ver, std::vector<
 		marksHandler::EndlessBelt::clearValues();
 		algorithmHandler::CommandsList::clearValues();
 		try {
-			marksHandler::EndlessBelt::setCarriage(fileHandler::importFile(args.substr(args.find(" ") + 1, EOF), ver, algorithmHandler::CommandsList::getCommands(), marksHandler::EndlessBelt::getPositions()));
+			marksHandler::EndlessBelt::setCarriage(fileHandler::importFile(args.substr(args.find(" ") + 1, EOF), ver, algorithmHandler::CommandsList::getCommands(), data, marksHandler::EndlessBelt::getPositions()));
 			UIHandler::fileImportMSG();
 		}
 		catch (ErrorCodes err) { UIHandler::errorMSG(err); }

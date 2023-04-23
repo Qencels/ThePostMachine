@@ -22,6 +22,8 @@ namespace postMachine {
 				static void addCommand(std::string command);
 				static void delCommand(size_t index);
 
+				static void changeCommand(size_t index, std::string command);
+
 				static std::vector<std::string>& getCommands();
 
 				static void clearValues();

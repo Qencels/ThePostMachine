@@ -45,5 +45,11 @@ namespace postMachine {
 			commands.clear();
 		}
 
+		void CommandsList::changeCommand(size_t index, std::string command) {
+			if (index < commands.size() && !commands.empty()) {
+				commands[index] = command;
+			}
+		}
+
 	}
 }

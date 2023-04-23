@@ -16,7 +16,7 @@ namespace postMachine {
 				<< "5. /set_carriage (position) - setting carriage.\n\n"
 				<< "6. /show_marks - shows the set values.\n"
 				<< "7. /show_alg - shows the set commands.\n\n"
-				<< "8. /clear - reset all values.\n"
+				<< "8. /clear all/marks/alg - reset values.\n"
 				<< "9. /start - run the algorithm.\n"
 				<< "10. /exit - exiting the program.\n\n"
 				<< "11. /import (file path) - imports the algorithm from a file.\n"
@@ -35,6 +35,9 @@ namespace postMachine {
 				break;
 			case WRONG_ARG:
 				std::cout << "Invalid argument!\n";
+				break;
+			case INCORRECT_FILE_DESIGN:
+				std::cout << "Incorrect file design!\n";
 				break;
 			default:
 				std::cout << "Undefined error!\n";
@@ -93,6 +96,7 @@ namespace postMachine {
 			}
 			std::cout << "\nUse commands definitions for setting up.\n"
 				<< "Use /del (index) to delete command in this position.\n"
+				<< "Use /set (index) (command) to change command.\n"
 				<< "Use /menu to return to the menu.\n"
 				<< "====================================================\n\n";
 				
@@ -144,7 +148,7 @@ namespace postMachine {
 			if (command.substr(0,13) == "/set_carriage") return set_carriage;
 			if (command == "/show_marks") return show_marks;
 			if (command == "/show_alg") return show_alg;
-			if (command == "/clear") return clear;
+			if (command.substr(0,6) == "/clear") return clear;
 			if (command == "/start") return start;
 			if (command == "/exit") return exitC;
 			if (command.substr(0,7) == "/import") return importF;
