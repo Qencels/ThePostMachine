@@ -8,13 +8,13 @@ namespace postMachine {
 		set_alg,
 		set_marks,
 		set_carriage,
-		show_marks,
-		show_alg,
+		show_data,
 		clear,
 		start,
 		exitC,
 		importF,
 		exportF,
+		set_speed
 	};
 
 	enum ErrorCodes {

@@ -44,6 +44,7 @@ namespace postMachine {
 			if (ind != -1) {
 				swap(positions[ind], positions[positions.size()-1]);
 				positions.pop_back();
+				sortArr();
 			}
 		}
 

@@ -14,10 +14,12 @@ namespace postMachine {
 				<< "3. /set_alg - setting up the algorithm.\n"
 				<< "4. /set_marks - setting marks.\n"
 				<< "5. /set_carriage (position) - setting carriage.\n\n"
-				<< "6. /show_marks - shows the set values.\n"
-				<< "7. /show_alg - shows the set commands.\n\n"
-				<< "8. /clear all/marks/alg - reset values.\n"
-				<< "9. /start - run the algorithm.\n"
+				<< "6. /show_data - shows the data.\n\n"
+				<< "7. /clear all/marks/alg - reset values.\n"
+				<< "    Clearing the marks also resets the carriage position.\n\n"
+				<< "8. /start - run the algorithm.\n\n"
+				<< "9. /set_speed (milliseconds) - sets the speed of execution\n"
+				<< "    of one algorithm command.\n\n"
 				<< "10. /exit - exiting the program.\n\n"
 				<< "11. /import (file path) - imports the algorithm from a file.\n"
 				<< "12. /export (file path) - exports the algorithm to a file.\n"
@@ -146,10 +148,10 @@ namespace postMachine {
 			if (command == "/set_alg") return set_alg;
 			if (command == "/set_marks") return set_marks;
 			if (command.substr(0,13) == "/set_carriage") return set_carriage;
-			if (command == "/show_marks") return show_marks;
-			if (command == "/show_alg") return show_alg;
+			if (command == "/show_data") return show_data;
 			if (command.substr(0,6) == "/clear") return clear;
 			if (command == "/start") return start;
+			if (command.substr(0, 10) == "/set_speed") return set_speed;
 			if (command == "/exit") return exitC;
 			if (command.substr(0,7) == "/import") return importF;
 			if (command.substr(0,7) == "/export") return exportF;
@@ -175,17 +177,72 @@ namespace postMachine {
 			return res;
 		}
 
-		void showMarks(std::vector<long long int> positions) {
+		void showMarks(const std::vector<long long int>& positions) {
 			for (size_t i = 0; i < positions.size(); i++){
 				std::cout << positions[i] << " ";
 			}
 			std::cout << "\n";
 		}
 
-		void showAlg(std::vector<std::string> commands) {
+		void showAlg(const std::vector<std::string>& commands) {
 			for (size_t i = 0; i < commands.size(); i++) {
 				std::cout << i + 1 << ". " << commands[i] << "\n";
 			}
+		}
+
+		void showRes(const std::vector<long long int>& positions, const std::vector<std::string>& commands) {
+			std::cout << "Installed marks: ";
+			showMarks(positions);
+			std::cout << "\nAlgorithm:\n";
+			showAlg(commands);
+			std::cout << "\nPress enter to continue.\n";
+		}
+
+		void visualization(const std::vector<long long int>& positions, const long long int carPos, long long int speed) {
+			system("cls");
+			size_t maxLen = 1;
+			std::string line;
+
+			for (size_t i = 0; i < positions.size(); i++) {
+				size_t temp = std::to_string(positions[i]).size();
+				if (maxLen < temp) maxLen = temp;
+			}
+
+			for (size_t i = 0; i < 21; i++) {
+				for (size_t j = 0; j < maxLen + 3; j++) {
+					if (i + carPos - 10 == carPos && j == (maxLen + 3) / 2) { line.push_back('V'); }
+					else { line.push_back('-'); }
+				}
+			}
+			std::cout << line << "-\n";
+
+			for (long long int i = carPos - 10; i <= carPos + 10; i++) {
+
+				bool isFinded = false;
+
+				for (size_t k = 0; k < positions.size(); k++) {
+					if (positions[k] == i) {
+						std::cout << "| ";
+						std::cout.width(maxLen);
+						std::cout << i;
+						std::cout << " ";
+						isFinded = true;
+						break;
+					}
+				}
+				if (!isFinded) {
+					std::cout << "| ";
+					std::cout.width(maxLen);
+					std::cout << " ";
+					std::cout << " ";
+				}
+			}
+			std::cout << "|\n";
+
+			std::cout << line << "-\n\nCarriage position: " << carPos << "\n";
+
+			Sleep(speed);
+
 		}
 
 	}

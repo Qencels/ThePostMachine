@@ -4,6 +4,7 @@
 #include <vector>
 #include <cctype>
 #include "Enums.h"
+#include <windows.h>
 
 namespace postMachine {
 	namespace UIHandler {
@@ -17,8 +18,11 @@ namespace postMachine {
 		void fileExportMSG(std::string filePath);
 		void fileImportMSG();
 
-		void showMarks(std::vector<long long int> positions);
-		void showAlg(std::vector<std::string> commands);
+		void showMarks(const std::vector<long long int>& positions);
+		void showAlg(const std::vector<std::string>& commands);
+		void showRes(const std::vector<long long int>& positions, const std::vector<std::string>& commands);
+
+		void visualization(const std::vector<long long int>& positions, const long long int carPos, long long int speed);
 
 		void input(std::string& buffer);
 		int commandSelector(std::string command);

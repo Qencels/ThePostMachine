@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdlib>
 #include <string>
 #include <vector>
 #include "Enums.h"
@@ -9,7 +8,7 @@
 #include "AlgorithmHandler.h"
 #include "FileHandler.h"
 
-void executeCommand(int command, std::string args, std::string ver, std::vector<std::string>& data);
+void executeCommand(int command, std::string args, std::string ver, std::vector<std::string>& data, long long int& executionSpeed);
 
 std::string CURRENT_VERSION;
 std::vector<std::string> CONFIG_DATA;
@@ -18,6 +17,8 @@ using namespace postMachine;
 
 int main()
 {
+
+	long long int executionSpeed = 500;
 
 	try {
 		CURRENT_VERSION = configHandler::Config::getInstance()->getVer();
@@ -31,7 +32,7 @@ int main()
         std::string buffer = "";
         UIHandler::input(buffer);
 
-		try { executeCommand(UIHandler::commandSelector(buffer), buffer, CURRENT_VERSION, CONFIG_DATA); }
+		try { executeCommand(UIHandler::commandSelector(buffer), buffer, CURRENT_VERSION, CONFIG_DATA, executionSpeed); }
         catch (ErrorCodes err) { UIHandler::errorMSG(err); }
 
     }
@@ -49,7 +50,7 @@ int algCmdSelector(std::string cmd, std::vector<std::string> cmdDeffinitions) {
 	return i;
 }
 
-void startAlg(std::vector<std::string>& commands, std::vector<long long int>& points, long long int carriagePos, std::vector<std::string> cmdDeffinitions) {
+void startAlg(std::vector<std::string>& commands, std::vector<long long int>& points, long long int carriagePos, std::vector<std::string> cmdDeffinitions, long long int speed) {
 
 	size_t i = 0;
 	long long int carPos = carriagePos;
@@ -59,16 +60,19 @@ void startAlg(std::vector<std::string>& commands, std::vector<long long int>& po
 	while (algCmdSelector(commands[i], cmdDeffinitions) != 5) { // 5 - end of program operator
 
 		std::vector<std::string> args = UIHandler::splitStr(commands[i].substr(commands[i].find(" ") + 1, EOF));
+		UIHandler::visualization(points, carPos, speed);
 
 		switch (algCmdSelector(commands[i], cmdDeffinitions))
 		{
 		case 0:
 			carPos++;
+			marksHandler::EndlessBelt::setCarriage(carPos);
 			try { i = _atoi64(args[0].data()) - 1; }
 			catch (...) { return; }
 			break;
 		case 1:
 			carPos--;
+			marksHandler::EndlessBelt::setCarriage(carPos);
 			try { i = _atoi64(args[0].data()) - 1; }
 			catch (...) { return; }
 			break;
@@ -211,7 +215,7 @@ void marksSettingsInit() {
 	}
 }
 
-void executeCommand(int command, std::string args, std::string ver, std::vector<std::string>& data) {
+void executeCommand(int command, std::string args, std::string ver, std::vector<std::string>& data, long long int& executionSpeed) {
 
 	switch (command)
 	{
@@ -241,13 +245,9 @@ void executeCommand(int command, std::string args, std::string ver, std::vector<
 		getchar();
 		break;
 
-	case show_marks:
-		UIHandler::showMarks(marksHandler::EndlessBelt::getPositions());
-		getchar();
-		break;
-
-	case show_alg:
-		UIHandler::showAlg(algorithmHandler::CommandsList::getCommands());
+	case show_data:
+		std::cout << "Carriage position: " << marksHandler::EndlessBelt::getCarPos() << "\n\n";
+		UIHandler::showRes(marksHandler::EndlessBelt::getPositions(), algorithmHandler::CommandsList::getCommands());
 		getchar();
 		break;
 
@@ -271,9 +271,20 @@ void executeCommand(int command, std::string args, std::string ver, std::vector<
 	case start:
 		try {
 			startAlg(algorithmHandler::CommandsList::getCommands(), marksHandler::EndlessBelt::getPositions(),
-				marksHandler::EndlessBelt::getCarPos(), data);
+				marksHandler::EndlessBelt::getCarPos(), data, executionSpeed);
 		}
 		catch (ErrorCodes err) { UIHandler::errorMSG(err); }
+		UIHandler::visualization(marksHandler::EndlessBelt::getPositions(), marksHandler::EndlessBelt::getCarPos(), executionSpeed);
+		std::cout << "\n";
+
+		UIHandler::showRes(marksHandler::EndlessBelt::getPositions(), algorithmHandler::CommandsList::getCommands());
+
+		getchar();
+		break;
+
+	case set_speed:
+		try { executionSpeed = _atoi64(args.substr(11,EOF).data()); }
+		catch (...) { UIHandler::errorMSG(WRONG_ARG); };
 		break;
 
 	case exitC:
