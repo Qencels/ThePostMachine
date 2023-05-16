@@ -45,6 +45,8 @@ namespace postMachine {
 				std::cout << "Undefined error!\n";
 				break;
 			}
+			std::cout << "Press Enter to continue!\n";
+			getchar();
 		}
 
 		void aboutMSG(std::string ver) {

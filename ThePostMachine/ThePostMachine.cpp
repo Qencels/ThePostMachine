@@ -58,6 +58,8 @@ void startAlg(std::vector<std::string>& commands, std::vector<long long int>& po
 	if (i >= commands.size()) return;
 
 	while (algCmdSelector(commands[i], cmdDeffinitions) != 5) { // 5 - end of program operator
+		
+		if (commands[i].find(" ") == -1) throw WRONG_ARG;
 
 		std::vector<std::string> args = UIHandler::splitStr(commands[i].substr(commands[i].find(" ") + 1, EOF));
 		UIHandler::visualization(points, carPos, speed);
@@ -65,35 +67,40 @@ void startAlg(std::vector<std::string>& commands, std::vector<long long int>& po
 		switch (algCmdSelector(commands[i], cmdDeffinitions))
 		{
 		case 0:
+			if (args.size() != 1) throw WRONG_ARG;
+			try { i = _atoi64(args[0].data()) - 1; }
+			catch (...) { throw WRONG_ARG; }
 			carPos++;
 			marksHandler::EndlessBelt::setCarriage(carPos);
-			try { i = _atoi64(args[0].data()) - 1; }
-			catch (...) { return; }
 			break;
 		case 1:
+			if (args.size() != 1) throw WRONG_ARG;
+			try { i = _atoi64(args[0].data()) - 1; }
+			catch (...) { throw WRONG_ARG; }
 			carPos--;
 			marksHandler::EndlessBelt::setCarriage(carPos);
-			try { i = _atoi64(args[0].data()) - 1; }
-			catch (...) { return; }
 			break;
 		case 2:
-			marksHandler::EndlessBelt::setMark(carPos);
+			if (args.size() != 1) throw WRONG_ARG;
 			try { i = _atoi64(args[0].data()) - 1; }
-			catch (...) { return; }
+			catch (...) { throw WRONG_ARG; }
+			marksHandler::EndlessBelt::setMark(carPos);
 			break;
 		case 3:
-			marksHandler::EndlessBelt::delMark(carPos);
+			if (args.size() != 1) throw WRONG_ARG;
 			try { i = _atoi64(args[0].data()) - 1; }
-			catch (...) { return; }
+			catch (...) { throw WRONG_ARG; }
+			marksHandler::EndlessBelt::delMark(carPos);
 			break;
 		case 4:
+			if (args.size() != 2) throw WRONG_ARG;
 			if (marksHandler::EndlessBelt::find(carPos) != -1) { 
 				try { i = _atoi64(args[1].data()) - 1; }
-				catch (...) { return; }
+				catch (...) { throw WRONG_ARG; }
 			}
 			else { 
 				try { i = _atoi64(args[0].data()) - 1; }
-				catch (...) { return; }
+				catch (...) { throw WRONG_ARG; }
 			}
 			break;
 		case 5:
